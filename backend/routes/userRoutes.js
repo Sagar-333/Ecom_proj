@@ -1,3 +1,5 @@
+// for creating user routes
+
 import express from "express";
 import {
   createUser,

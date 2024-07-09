@@ -1,3 +1,5 @@
+// for defining the model of user i.e how the user will look
+
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(

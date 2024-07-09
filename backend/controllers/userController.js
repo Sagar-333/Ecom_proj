@@ -6,17 +6,21 @@ import createToken from "../utils/createToken.js";
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
 
+  // checking if user has filled all the fields 
   if (!username || !email || !password) {
     throw new Error("Please fill all the inputs.");
   }
 
+  // finding if the user already exists or not
   const userExists = await User.findOne({ email });
   if (userExists) res.status(400).send("User already exists");
 
+  // using bcrpyt to hash the user password for security
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const newUser = new User({ username, email, password: hashedPassword });
 
+  // creating new user
+  const newUser = new User({ username, email, password: hashedPassword });
   try {
     await newUser.save();
     createToken(res, newUser._id);
@@ -33,6 +37,8 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
+// loging-in user
+
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -41,6 +47,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const existingUser = await User.findOne({ email });
 
+  // checking for user password
   if (existingUser) {
     const isPasswordValid = await bcrypt.compare(
       password,
